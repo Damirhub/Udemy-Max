@@ -1,29 +1,48 @@
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
-import UserOutput from './User/UserOutput';
-import UserInput from './User/UserInput';
 
 class App extends Component {
  
   state = {
       persons: [
-        {name: "Max", age: 28},
-        {name: "Manu", age: 29},
-        {name: "Stephanie", age: 26}
+        {id : 'ama1', name: "Max", age: 28},
+        {id : 'ama1', name: "Manu", age: 29},
+        {id : 'ama1', name: "Stephanie", age: 26}
       ],
-      username : "please enter username"
+      otherState : "some other value",
+      showPersons: false
     }
 
-    switchNameHandler(newName) {
+  // deletePersonHandler  (personIndex) {
+  //   const persons = this.state.persons;
+  //   persons.splice(personIndex, 1);
+  //   this.setState({
+  //     persons :persons
+  //   })
+  // } 
+
+  // deletePersonHandler  = (indexForDel) => {
+  //   this.state.persons.splice(indexForDel, 1);
+  //   this.setState ({
+  //     persons : this.state.persons
+  //   })
+  // }
+
+    deletePersonHandler = (deletedIndex) => {
+      const personGone = this.state.persons.slice(); 
+      /* moze i bez slice, ali se onda mutira, pa je dobra praksa
+      da ide slice pre splice.
+      splice kopira sadrzaj, a splice izbacuje "(od indexa, komada n)*/
+      /*Modernija sintakesa je: */ 
+      //const personGone = [...this.state.persons]
+      personGone.splice(deletedIndex, 1);
       this.setState({
-        persons: [
-          {name: newName, age: 33},
-          {name: "Manu", age: 29},
-          {name: "Stephanie", age: 19}
-        ]
+        persons : personGone
       })
+
     }
+     
 
     nameChangedHandler(event) {
       this.setState ({
@@ -31,19 +50,16 @@ class App extends Component {
           {name: "Maximimi", age: 33},
           {name: event.target.value, age: 29},
           {name: "Stephanie", age: 19}
-        ]
-        
+        ]       
       })
-
     } 
 
-    inputName(event) {
-      this.setState ({
-        username : event.target.value
-      })
-    }
-    
-
+    togglePersonsHandler = () => {
+        this.setState({
+          showPersons: !this.state.showPersons
+        })
+      }
+ 
 
   render() {
     const style = {
@@ -54,38 +70,43 @@ class App extends Component {
       cursor: 'pointer'
     }
 
+    let visible = null;
+
+    if( this.state.showPersons ) {
+
+  
+      visible = (
+    <div>
+
+      {this.state.persons.map((person, indexForDel) => {
+        return (
+        <Person 
+        killHim = {() => this.deletePersonHandler(indexForDel)}
+       // forDelClick = {() => this.deletePersonHandler(indexForDel)}
+       // click = { () => this.deletePersonHandler(index)}
+        name = {person.name}
+        age = {person.age}
+        key = {person.id}
+        />
+
+        )}
+      )
+    }
+
+
+    </div> 
+      )
+  }
+
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
         <p>This is really working</p>
-        <button style = {style} onClick = {this.switchNameHandler.bind(this, "Mimim")} >Switch Name</button>
-       
+        <button style = {style} onClick = {this.togglePersonsHandler} >Switch Name</button>
 
-        <Person name = {this.state.persons[0].name}
-        age = {this.state.persons[0].age}
-        click = {this.switchNameHandler.bind(this, "REREROOO")}
-        />
-
-        <Person name = {this.state.persons[1].name} 
-          age = {this.state.persons[1].age}
-          changed = {this.nameChangedHandler.bind(this)}
-          >  Hobbies: Racing </Person>
-
-        <Person name = {this.state.persons[2].name}
-         age = {this.state.persons[2].age}/>
-        
-        <hr />
-        <UserInput username = {this.state.username}
-                  inputName = {this.inputName.bind(this)}
-        />
-
-        <hr />
-
-        <UserOutput username = {this.state.username} />
-
-        <UserOutput username = "neki drugi username" />
-        
-
+        {visible}
+      
+          
       </div>
     );
   }
