@@ -7,8 +7,8 @@ class App extends Component {
   state = {
       persons: [
         {id : 'ama1', name: "Max", age: 28},
-        {id : 'ama1', name: "Manu", age: 29},
-        {id : 'ama1', name: "Stephanie", age: 26}
+        {id : 'sdf2', name: "Manu", age: 29},
+        {id : 'asd4', name: "Stephanie", age: 26}
       ],
       otherState : "some other value",
       showPersons: false
@@ -29,30 +29,73 @@ class App extends Component {
   //   })
   // }
 
-    deletePersonHandler = (deletedIndex) => {
-      const personGone = this.state.persons.slice(); 
-      /* moze i bez slice, ali se onda mutira, pa je dobra praksa
-      da ide slice pre splice.
-      splice kopira sadrzaj, a splice izbacuje "(od indexa, komada n)*/
-      /*Modernija sintakesa je: */ 
-      //const personGone = [...this.state.persons]
-      personGone.splice(deletedIndex, 1);
-      this.setState({
-        persons : personGone
-      })
+    // deletePersonHandler = (deletedIndex) => {
+    //   const personGone = this.state.persons.slice(); 
+    //   /* moze i bez slice, ali se onda mutira, pa je dobra praksa
+    //   da ide slice pre splice.
+    //   splice kopira sadrzaj, a splice izbacuje "(od indexa, komada n)*/
+    //   /*Modernija sintakesa je: */ 
+    //   //const personGone = [...this.state.persons]
+    //   personGone.splice(deletedIndex, 1);
+    //   this.setState({
+    //     persons : personGone
+    //   })
+
+    // }
+
+    deletePersonHandler = (personIndex) => {
+      const personGone = this.state.persons.slice();
+      personGone.splice(personIndex, 1);
+        this.setState ({
+          persons : personGone
+        })
 
     }
+
+    /*
+      Samo po Index-u sa mutiranjem
+    nameChangedHandler(event, personIndex) {
+      this.state.persons[personIndex].name = event.target.value;
+           this.setState ({
+             name: event.target.value
+           })
+         }
+          */
      
 
-    nameChangedHandler(event) {
+    // nameChangedHandler(event, id) {
+    //   const personIndex = this.state.persons.findIndex( p=> {
+    //     return p.id === id;
+    //   })
+      
+    
+         //po Id nemutirano, najispravniji nacin
+    nameChangedHandler(event, id) {
+          const personIndex = this.state.persons.findIndex( p=> {
+            return p.id === id;
+          })
+      
+
+               /** po index-u nemutirano */
+        //nameChangedHandler(event, personIndex) {
+
+
+     
+      const person = {...this.state.persons[personIndex] }
+        
+      person.name = event.target.value
+
+      const persons = [...this.state.persons]
+      persons[personIndex] = person;
+
       this.setState ({
-        persons: [
-          {name: "Maximimi", age: 33},
-          {name: event.target.value, age: 29},
-          {name: "Stephanie", age: 19}
-        ]       
+        persons : persons
       })
     } 
+
+
+
+
 
     togglePersonsHandler = () => {
         this.setState({
@@ -78,20 +121,37 @@ class App extends Component {
       visible = (
     <div>
 
-      {this.state.persons.map((person, indexForDel) => {
+      {/* {this.state.persons.map((anyName, indexForDel) => {
         return (
         <Person 
         killHim = {() => this.deletePersonHandler(indexForDel)}
        // forDelClick = {() => this.deletePersonHandler(indexForDel)}
        // click = { () => this.deletePersonHandler(index)}
-        name = {person.name}
-        age = {person.age}
-        key = {person.id}
+        name = {anyName.name}
+        age = {anyName.age}
+    
         />
 
         )}
       )
-    }
+    } */}
+
+    {this.state.persons.map((person, indexOf) =>{
+      return(
+        <Person
+        name = {person.name}
+        age = {person.age}
+        killHim = {()=> this.deletePersonHandler(indexOf)}
+        key = {person.id}
+       // changed = {this.nameChangedHandler.bind(this, event, indexOf)}
+        changed = { (event) => this.nameChangedHandler(event, person.id)}
+       // changed = { (event) => this.nameChangedHandler(event, indexOf)}
+        />
+      )}
+    
+    
+    
+    )}
 
 
     </div> 
