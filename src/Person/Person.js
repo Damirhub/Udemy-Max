@@ -1,11 +1,17 @@
 import React from 'react';
-import "./Person.css"
+import Radium from 'radium';
+import "./Person.css";
 
 /**Ne koristi se This u const, samo u class */
 const person = (props) => {
+    var style = {
+       '@media (min-width: 500px)' : {            
+                width: '400px'
+    }
+}
     
     return (
-        <div className = "Person">
+        <div className = "Person" style = {style}>
          <p onClick = {props.killHim}>I'm {props.name} and i am  {props.age} years old</p>
          <p>{props.children}</p>
          
@@ -14,4 +20,4 @@ const person = (props) => {
     )
 }
 
-export default person;
+export default Radium(person);
