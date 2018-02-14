@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import Radium, {StyleRoot} from 'radium';
-import Person from './Person/Person';
+import Person from '../components/Persons/Person/Person';
+import Persons from '../components/Persons/Persons'
+
 
 class App extends Component {
  
@@ -125,46 +127,18 @@ class App extends Component {
     if( this.state.showPersons ) {
 
   
-      visible = (
-        <StyleRoot>
-    <div>
-
-      {/* {this.state.persons.map((anyName, indexForDel) => {
-        return (
-        <Person 
-        killHim = {() => this.deletePersonHandler(indexForDel)}
-       // forDelClick = {() => this.deletePersonHandler(indexForDel)}
-       // click = { () => this.deletePersonHandler(index)}
-        name = {anyName.name}
-        age = {anyName.age}
-    
-        />
-
-        )}
+    visible = (
+      <StyleRoot>
+        <div>
+          <Persons 
+          persons = {this.state.persons}
+          killHim = {this.deletePersonHandler}
+          changed = {this.nameChangedHandler.bind(this)} // na primeru radi, ovde ne radi sa events
+          />
+        </div> 
+      </StyleRoot>
       )
-    } */}
-
-    {this.state.persons.map((person, indexOf) =>{
-      return(
-        <Person
-        name = {person.name}
-        age = {person.age}
-        killHim = {()=> this.deletePersonHandler(indexOf)}
-        key = {person.id}
-       // changed = {this.nameChangedHandler.bind(this, event, indexOf)}
-        changed = { (event) => this.nameChangedHandler(event, person.id)}
-       // changed = { (event) => this.nameChangedHandler(event, indexOf)}
-        />
-      )}
-    
-   
-    
-    )}
-
-
-    </div> 
-    </StyleRoot>
-      )
+      
       style.backgroundColor = 'red';
       style[':hover'] = {
         backgroundColor: 'salmon',
@@ -172,22 +146,11 @@ class App extends Component {
       }
   }
 
-  let classes = [];
-  if(this.state.persons.length <= 2) {
-  classes.push('red');
-  }
-
-  if(this.state.persons.length <= 1) {
-  classes.push('bold');
-  }
 
     return (
       <StyleRoot>
       <div className="App">
-        <h1>Hi, I'm a React App</h1>
-        <p className = {classes.join(" ")}>This is really working</p>
-        <button style = {style} onClick = {this.togglePersonsHandler} >Switch Name</button>
-
+    
         {visible}
       
           
